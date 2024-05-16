@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch } from "react-icons/fa";
 
-const SearchBar = ({onFocus, onBlur,setInput,input,setResults}) => {
+const SearchBar = ({onBlur, setInput,input,setResults, onFocus}) => {
 
   const [debouncedInput, setDebouncedInput] = useState(input);
     useEffect(() => {
@@ -35,8 +35,8 @@ const SearchBar = ({onFocus, onBlur,setInput,input,setResults}) => {
           placeholder="Search..."
           className="px-4 py-2 w-80 md:w-[600px] text-black" // Adjust width as needed
           value={input}
-          onFocus={onFocus}
           onBlur={onBlur}
+          onFocus={onFocus}
           onChange={(e) => setInput(e.target.value)}
         />
         <button
