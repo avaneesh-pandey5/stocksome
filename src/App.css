@@ -1,12 +1,44 @@
 * {
-    margin: 0;
-    padding: 0;
-  }
-  
-  .bg{
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.bg {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.navbar-container {
+  width: 100%;
+}
+
+.content-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative; /* Ensure the content container is the positioning reference */
+}
+
+.search-container {
+  align-self: flex-start;
+  width: 80%; /* Adjust width as needed */
+  margin-left: 10vh;
+  position: relative; /* Make this the reference for the absolute positioning of search results */
+}
+
+.search-results-container {
+  position: absolute;
+  left: 0;
+  width: 100%; /* Match width of the search-container */
+}
