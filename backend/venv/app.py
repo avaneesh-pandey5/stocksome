@@ -23,12 +23,23 @@ def chart_data(ticker_symbol):
     dates = [date for date in hist.index]
     closing_prices = list(hist['Close'])
 
+    if closing_prices[0] - closing_prices[-1] < 0:
+        borderColor = "#1de190"
+        backgroundColor = "rgba(126, 238, 194, 0.4)"
+    else:
+        borderColor = "#dc3545"
+        backgroundColor = "rgba(220, 53, 69, 0.4)"
+
     data = {
         'labels': dates,
         'datasets': [{
             'label': f"Closing Price of {ticker_symbol.upper()}",
             'data': closing_prices,
-            'borderColor': "rgb(75,192,192)",
+            'fill' : True,
+            'borderColor': borderColor,
+            'backgroundColor': backgroundColor,
+            'tension': 0.4,
+            'pointRadius': 0
         }]
     }
     return jsonify(data)
