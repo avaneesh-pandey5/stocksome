@@ -15,6 +15,7 @@ import {
   Tooltip,
   Legend,
   TimeScale,
+  Filler,
 } from "chart.js";
 
 // Registering components required by Chart.js to render the chart
@@ -26,7 +27,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  TimeScale
+  TimeScale,
+  Filler
 );
 
 export const LineChart = () => {
@@ -83,6 +85,7 @@ export const LineChart = () => {
           response_ok = true;
           const data = await response.json();
           setLineData(data);
+          console.log(data);
         } else {
           throw new Error("Network response was not ok.");
         }
@@ -115,7 +118,9 @@ export const LineChart = () => {
     <div className="app">
       <div className="bg" id="vanta">
         <Navbar />
-        <Line options={options} data={lineData} />
+        <div className="mt-20 p-10">
+          <Line options={options} data={lineData} />
+        </div>
       </div>
     </div>
   );
