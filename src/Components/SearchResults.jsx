@@ -22,8 +22,11 @@ const SearchResults = ({
         return (
           <div
             key={id}
-            className="search-result"
-            onClick={() => navigate(`/company/${result.Symbol}`)}
+            className="search-result cursor-pointer"
+            onClick={() => {
+              navigate(`/company/${result.Symbol}`);
+              window.location.reload();
+            }}
           >
             {`${result.CompanyName} || ${result.Symbol}`}
           </div>

@@ -10,7 +10,7 @@ const Navbar = () => {
     { name: "Portfolio", link: "/" },
   ];
   return (
-    <div className="w-full fixed top-0 left-0">
+    <div className="w-[calc(99%)] fixed top-0 left-0 bg-white border-2 border-black">
       <div className="md:flex items-center justify-between bg-[0x23153c] py-4 md:px-10 px-7">
         <div className="font-bold text-3xl cursor-pointer flex items-centre font-[Outfit] text-black pt-2">
           <span className="pl-5 text-4xl text-indigo-600 mr-2">

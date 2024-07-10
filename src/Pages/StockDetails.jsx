@@ -3,123 +3,99 @@ import { useParams } from "react-router-dom";
 import "moment";
 import "chartjs-adapter-moment";
 import Navbar from "../Components/Navbar";
-
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  TimeScale,
-  Filler,
-} from "chart.js";
-
-// Registering components required by Chart.js to render the chart
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  TimeScale,
-  Filler
-);
+import PriceChart from "../Components/PriceChart";
+import PriceSummary from "../Components/PriceSummary";
+import CompanyEssentials from "../Components/CompanyEssentials";
+import TestChart from "../Components/TestChart";
+import SearchBar from "../Components/SearchBar";
+import SearchResults from "../Components/SearchResults";
 
 export const LineChart = () => {
-  // console.log(result)
-  const { symbol } = useParams(); // This hooks extract the parameter from the URL
-  const [lineData, setLineData] = useState(null); // Start with null to represent 'no data'
-
-  // Options for Chart.js (customize this according to your needs)
-  const options = {
-    responsive: true,
-    maintainAspectRatio: true, // Keep the aspect ratio
-    aspectRatio: 4, // Lower value for a smaller chart
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Stock Closing Prices",
-      },
-    },
-    scales: {
-      x: {
-        type: "time",
-        time: {
-          unit: "month",
-          tooltipFormat: "MMM YYYY",
-          displayFormats: {
-            month: "MMM YYYY",
-          },
-        },
-        ticks: {
-          source: "labels",
-          autoSkip: true,
-          maxTicksLimit: 12, // Adjust based on your preference for label density
-        },
-      },
-      y: {
-        beginAtZero: false,
-      },
-    },
+  const [input, setInput] = useState("");
+  const [results, setResults] = useState([]);
+  const [result, setResult] = useState([]);
+  const [resultsClicked, setResultsClicked] = useState(false);
+  const handleOnFocus = () => {
+    setResultsClicked(true);
   };
-  // const options = {};
-  useEffect(() => {
-    let isMounted = true; // Flag to track mounted state
-    let response_ok = false;
+  const { symbol } = useParams();
+  const [companyName, setCompanyName] = useState({});
 
-    const fetchData = async (tickerSymbol) => {
+  useEffect(() => {
+    const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/chart-data/${tickerSymbol}`
+          `http://localhost:5000/get-name/${symbol}`
         );
-        if (response.ok && isMounted) {
-          response_ok = true;
-          const data = await response.json();
-          setLineData(data);
-          console.log(data);
-        } else {
-          throw new Error("Network response was not ok.");
-        }
+        const data = await response.json();
+        setCompanyName(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-    if (!response_ok) {
-      console.log(symbol);
-      fetchData(`${symbol}.NS`);
-    }
-
-    // Replace this with the ticker symbol you want to fetch
-    // console.log(result)
-
-    // Cleanup function to set the flag false when the component unmounts
-    return () => {
-      isMounted = false;
-    };
+    fetchData();
   }, []);
 
-  // Conditional rendering based on whether data has been fetched
-  if (lineData === null) {
-    return <div>Loading chart data...</div>;
-  }
+  const handleOnBlur = () => {
+    // if (!resultsClicked){
+    //   setResults([]);
+    // }
+    // setResultsClicked(false);
+    setTimeout(() => {
+      setResultsClicked(false);
+    }, 500);
+  };
 
-  // Render the Line chart with fetched data
-
+  const onClickSearchResult = (result) => {
+    setResult(result);
+    console.log(result);
+    // navigate('/StockDetails.jsx')
+  };
   return (
-    <div className="app">
-      <div className="bg" id="vanta">
-        <Navbar />
-        <div className="mt-20 p-10">
-          <Line options={options} data={lineData} />
+    <div className="">
+      <Navbar />
+      <div className="flex flex-row border-2 border-black h-screen overflow-y-scroll">
+        <div>
+          <div className="text-black pt-28 pl-20 mb-10">
+            <div>
+              <div className="w-full ml-[25%] pb-10">
+                <SearchBar
+                  onBlur={handleOnBlur}
+                  onFocus={handleOnFocus}
+                  setInput={setInput}
+                  input={input}
+                  setResults={setResults}
+                />
+                <div className="search-results-container w-full ml-[25%]">
+                  <SearchResults
+                    results={results}
+                    setResult={setResult}
+                    setResults={setResults}
+                    setInput={setInput}
+                    onClickSearchResult={onClickSearchResult}
+                    setResultsClicked={setResultsClicked}
+                    resultsClicked={resultsClicked}
+                  />
+                </div>
+              </div>
+              <div className="text-3xl">{companyName["CompanyName"]} </div>
+              <div className="flex flex-row">
+                <div className="text-lg"> Symbol : </div>
+                <div className="text-lg"> {symbol} </div>
+              </div>
+              <div className="grid grid-cols-2">
+                <div className="col-span-1 row-span-1">
+                  <PriceSummary />
+                </div>
+                <div className="col-span-1 row-span-2 mt-10 pl-5 m-10">
+                  <PriceChart />
+                </div>
+                <div className="col-span-1 row-span-1">
+                  <CompanyEssentials />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -127,34 +103,3 @@ export const LineChart = () => {
 };
 
 export default LineChart;
-
-// const StockDetails = () => {
-//   const { symbol } = useParams(); // This hooks extract the parameter from the URL
-//   const [companyData, setCompanyData] = useState(null);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       const response = await fetch(`http://localhost:5000/chart-data/${symbol}.NS`);
-//       const data = await response.json();
-//       setCompanyData(data);
-//     };
-//     fetchData();
-//   }, [symbol]);
-
-//   return (
-//     <div>
-//       {companyData ? (
-//         <div>
-//           <h1>{companyData.name}</h1>
-//           <p>{companyData.description}</p>
-//           {console.log(companyData)}
-//           {/* other data rendering */}
-//         </div>
-//       ) : (
-//         <p>Loading...</p>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default StockDetails;
