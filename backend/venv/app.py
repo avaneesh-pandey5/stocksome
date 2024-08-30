@@ -5,7 +5,7 @@ import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
-
+# Fix this FILE
 stock_names = pd.read_csv("backend/venv/StockNames.csv")
 
 @app.route('/price-chart-data/<ticker_symbol>/<data_range>', methods=['GET'])
